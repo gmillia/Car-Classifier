@@ -31,7 +31,9 @@ def getIndex(imageName):
 	n = re.sub("\D", "", n)  #strip from .jpg
 	return n
 
-def getImages(startingPath):
+#Function that opens the images, converts into the desired dimension (creates matrix)
+#and puts them (image matrix) into corresponding place in the list
+def getImages(startingPath, text):
 	cnt = 1
 	for dirpath, dirnames, filenames in os.walk(startingPath):
 		for filename in filenames:
@@ -40,8 +42,8 @@ def getImages(startingPath):
 			img = cv2.imread(filename)
 			res = cv2.resize(img, dsize=(128, 128), interpolation=cv2.INTER_CUBIC)
 			train_images[int(index)] = res
-			print("Training image #", cnt)
+			print(text, cnt)
 			cnt+=1
 
 readData(train_file, train_images_names, train_images_targets)
-getImages(train_start)
+getImages(train_start, "Reading train image #")
