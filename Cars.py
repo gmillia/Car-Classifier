@@ -9,6 +9,9 @@ import re
 
 #Starting path for training images
 train_start = "C:\\Users\\gmill\\Documents\\Python\\Car_Class\\train"
+#Starting path for testing images
+test_start = "C:\\Users\\gmill\\Documents\\Python\\Car_Class\\test"
+
 train_images = [None] * 8145  #Array of matrices that hold images
 train_images_names = []  #image names: 0001.img etc
 train_images_targets = []  #image target: class 150 etc
@@ -41,7 +44,8 @@ def getImages(startingPath, text):
 			filename = os.path.join(dirpath, filename)
 			img = cv2.imread(filename)
 			res = cv2.resize(img, dsize=(128, 128), interpolation=cv2.INTER_CUBIC)
-			train_images[int(index)] = res
+			image_array = np.array(res.T)[0].flatten()
+			train_images[int(index)] = image_array
 			print(text, cnt)
 			cnt+=1
 
