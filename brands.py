@@ -10,6 +10,7 @@ from keras.applications.resnet50 import ResNet50
 from keras.layers.pooling import GlobalAveragePooling2D
 from keras.layers import Dense, Flatten, Dropout, Activation, Conv2D, MaxPooling2D
 from keras.utils.np_utils import to_categorical
+from PIL import Image
 
 #brands = ['Acura', 'Hummer', 'Aston Martin', 'Audi', 'Bentley', 'BMW', 'Bugatti', 'Buick', 'Cadillac', 'Chevrolet', 'Chrysler', 'Daewoo', 'Dodge', 'Eagle', 'Ferrari', 'FIAT', 'Fisker', 'Ford', 'Geo Metro', 'GMC', 'Honda', 'Hyundai', 'HUMMER', 'Infinity', 'Isuzu', 'Jeep', 'Lambroghini', 'Land Rover', 'Lincoln', 'Maybach', 'Mazda', 'McLaren', 'Mercedes-Benz', 'MINI', 'Mitsubishi', 'Nissan', 'Plymouth', 'Porsche', 'Ram', 'Rolls-Royce', 'Scion', 'smart', 'Spyker', 'Suzuki', 'Tesla', 'Toyota', 'Volkswagen', 'Volvo']
 brands = ['Acura', 'Audi', 'BMW', 'Chevrolet', 'Mercedes-Benz']
@@ -51,14 +52,32 @@ def getImages(startingPath, brand, brand_list):
 		if brand in dirname:
 			for filename in filenames:
 				if count <= limit_per_brand:
-				#ind = getIndex(filename)
+					#ind = getIndex(filename)
 					filename = os.path.join(dirpath, filename)
-					img = image.load_img(filename, target_size=(224,224,3))
+					img = image.load_img(filename, False)
+					#img = image.load_img(filename, target_size=(224,224,3))
+					# Resize the image maintaining aspect ratio and then crop the image.
+					img_height = (img.size)[0]
+					img_width = (img.size)[1]
+					resized_w = 224
+					resized_h = 224
+					image_w = resized_w
+					image_h = resized_h
+					img.resize((image_h,image_w))
+					if (img_width > img_height):
+						ratio_w = resized_w / img_width
+						image_h = ratio_w * img_height
+					else:
+						ratio_h = resized_h / img_width
+						image_w = ratio_h * img_height
+					rect_l = int((img_width - resized_w)/2)
+					rect_t = int((img_height - resized_h)/2)
+					img = img.crop((rect_l, rect_t, rect_l + resized_w, rect_t + resized_h))
 					x = image.img_to_array(img)
+
 					#image_list[int(ind)] = x  #for finding the target
 					#image_list.append(x)
 					brand_list.append(x)
-					
 					print("Reading: ", brand, count)
 					count+=1
 
